@@ -57,7 +57,7 @@ Afghanistan	 AFG	  PPG, official creditors (DIS, current US$)                   
 
 ```
 ## Task-2: Instructions
-* Finding the number of distinct countries
+
 ```
 Find the number of distinct countries.
 
@@ -65,6 +65,9 @@ Use the DISTINCT clause and the COUNT() function in pair on the country_name col
 Alias the resulting column as total_distinct_countries.
 Jupyter Notebook trick: if you click the white area to the left of the output for this task's code cell, the output area will be collapsed and become scrollable.
 ```
+
+* Finding the number of distinct countries
+
 ```
 From the first ten rows, we can see the amount of debt owed by Afghanistan in the different debt indicators.
 But we do not know the number of different countries we have on the table. 
@@ -87,4 +90,97 @@ ANSWER:
 Out[39]:
 total_distinct_countries
 124
+```
+
+## Task-3: Instructions
+```
+Extract the unique debt indicators in the table.
+
+Use the DISTINCT clause on the indicator_code column.
+Alias the resulting column as distinct_debt_indicators.
+Order the results by distinct_debt_indicators.
+```
+* Finding out the distinct debt indicator
+
+```
+We can see there are a total of 124 countries present on the table. As we saw in the first section, 
+there is a column called indicator_name that briefly specifies the purpose of taking the debt. Just beside that column,
+there is another column called indicator_code which symbolizes the category of these debts. 
+Knowing about these various debt indicators will help us to understand the areas in which a country can possibly be indebted to.
+```
+```
+ANSWER:
+        In [41]: 
+        %%sql
+        SELECT 
+            DISTINCT indicator_code AS distinct_debt_indicators
+        FROM international_debt
+        ORDER BY distinct_debt_indicators;
+         * postgresql:///international_debt
+        25 rows affected
+```
+```
+        Out[41]:
+        distinct_debt_indicators
+        DT.AMT.BLAT.CD
+        DT.AMT.DLXF.CD
+        DT.AMT.DPNG.CD
+        DT.AMT.MLAT.CD
+        DT.AMT.OFFT.CD
+        DT.AMT.PBND.CD
+        DT.AMT.PCBK.CD
+        DT.AMT.PROP.CD
+        DT.AMT.PRVT.CD
+        DT.DIS.BLAT.CD
+        DT.DIS.DLXF.CD
+        DT.DIS.MLAT.CD
+        DT.DIS.OFFT.CD
+        DT.DIS.PCBK.CD
+        DT.DIS.PROP.CD
+        DT.DIS.PRVT.CD
+        DT.INT.BLAT.CD
+        DT.INT.DLXF.CD
+        DT.INT.DPNG.CD
+        DT.INT.MLAT.CD
+        DT.INT.OFFT.CD
+        DT.INT.PBND.CD
+        DT.INT.PCBK.CD
+        DT.INT.PROP.CD
+        DT.INT.PRVT.CD
+```
+
+
+## Task-4: Instructions
+
+```
+Find out the total amount of debt as reflected in the table.
+
+Use the built-in SUM function on the debt column, then divide it by 1000000 and round the result to 2 decimal places so that the output is fathomable.
+Alias the resulting column as total_debt.
+```
+* Totaling the amount of debt owed by the countries
+
+```
+As mentioned earlier, the financial debt of a particular country represents its economic state.
+But if we were to project this on an overall global scale, how will we approach it?
+Let's switch gears from the debt indicators now and
+find out the total amount of debt (in USD) that is owed by the different countries.
+This will give us a sense of how the overall economy of the entire world is holding up.
+```
+```
+ANSWER:
+
+        In [43]: 
+        %%sql
+        SELECT 
+            ROUND(SUM(debt)/1000000, 2) AS total_debt
+        FROM international_debt; 
+         * postgresql:///international_debt
+        1 rows affected.
+```
+```
+    Out[43]:
+    total_debt
+    3079734.49
+
 ```
