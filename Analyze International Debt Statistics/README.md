@@ -316,3 +316,122 @@ RESULT:
         country_name	                   indicator_name
         China	        Principal repayments on external debt, long-term (AMT, current US$)
 ```
+## Task-8: Instructions
+
+```
+Find out the debt indicator that appears most frequently.
+
+* Select the indicator_code column, then separately apply an aggregate function to count its values.
+* Alias the column resulting from the counting as indicator_count.
+* Group the results by indicator_code and order them first by the newly created indicator_count column then the indicator_code column,
+both in a descending manner.
+* Limit the resulting number of rows to 20.
+```
+* The most common debt indicator
+```
+China has the highest amount of debt in the long-term debt (DT.AMT.DLXF.CD) category. 
+This is verified by The World Bank. It is often a good idea to verify our analyses like this since it validates that our investigations are correct.
+We saw that long-term debt is the topmost category when it comes to the average amount of debt. 
+But is it the most common indicator in which the countries owe their debt? Let's find that out.
+```
+
+```
+ANSWER:
+        In [51]:
+        %%sql
+        SELECT 
+            indicator_code,
+            COUNT(indicator_code) AS indicator_count
+        FROM international_debt
+        GROUP BY indicator_code
+        ORDER BY indicator_count DESC, indicator_code DESC
+        LIMIT 20;
+         * postgresql:///international_debt
+        20 rows affected.
+```
+```
+RESULT:
+        Out[51]:
+        indicator_code	indicator_count
+        DT.INT.OFFT.CD	124
+        DT.INT.MLAT.CD	124
+        DT.INT.DLXF.CD	124
+        DT.AMT.OFFT.CD	124
+        DT.AMT.MLAT.CD	124
+        DT.AMT.DLXF.CD	124
+        DT.DIS.DLXF.CD	123
+        DT.INT.BLAT.CD	122
+        DT.DIS.OFFT.CD	122
+        DT.AMT.BLAT.CD	122
+        DT.DIS.MLAT.CD	120
+        DT.DIS.BLAT.CD	113
+        DT.INT.PRVT.CD	98
+        DT.AMT.PRVT.CD	98
+        DT.INT.PCBK.CD	84
+        DT.AMT.PCBK.CD	84
+        DT.INT.DPNG.CD	79
+        DT.AMT.DPNG.CD	79
+        DT.INT.PBND.CD	69
+        DT.AMT.PBND.CD	69
+```
+
+## Task-9: Instructions
+
+```
+Find out the debt indicators for which a country owes its highest debt.
+
+* Select the country_name, indicator_code and debt columns, and apply an aggregate function to take the maximum of debt.
+  * Alias the result as maximum_debt.
+* Group the results by country_name and indicator_code.
+* Order the results by maximum_debt in a descending manner.
+* Limit the output to 10.
+```
+* Other viable debt issues and conclusion
+
+```
+There are a total of six debt indicators in which all the countries listed in our dataset have taken debt. 
+The indicator DT.AMT.DLXF.CD is also there in the list.
+So, this gives us a clue that all these countries are suffering from a common economic issue. 
+But that is not the end of the story, a part of the story rather.
+
+Let's change tracks from debt_indicators now and focus on the amount of debt again.
+Let's find out the maximum amount of debt across the indicators along with the respective country names. With this,
+we will be in a position to identify the other plausible economic issues a country might be going through. By the end of this section,
+we will have found out the debt indicators in which a country owes its highest debt.
+
+In this notebook, we took a look at debt owed by countries across the globe. 
+We extracted a few summary statistics from the data and unraveled some interesting facts and figures.
+We also validated our findings to make sure the investigations are correct.
+```
+
+```
+        ANSWER:
+        In [53]:
+        %%sql
+        SELECT 
+            country_name, 
+            indicator_code,
+            MAX(debt) AS maximum_debt
+        FROM international_debt
+        GROUP BY country_name, indicator_code
+        ORDER BY maximum_debt DESC
+        LIMIT 10;
+         * postgresql:///international_debt
+        10 rows affected.
+```
+
+```
+RESULT:
+Out[53]:
+country_name	                        indicator_code	        maximum_debt
+China	      		                   DT.AMT.DLXF.CD    	96218620835.699996948
+Brazil		   		                   DT.AMT.DLXF.CD	    90041840304.100006104
+China			           	           DT.AMT.DPNG.CD	     72392986213.800003052
+Russian Federation			           DT.AMT.DLXF.CD	    66589761833.5
+Turkey		       		               DT.AMT.DLXF.CD	    51555031005.800003052
+South Asia		   		               DT.AMT.DLXF.CD	    48756295898.199996948
+Brazil	           		            	DT.AMT.PRVT.CD	    43598697498.599998474
+Russian Federation		            	DT.AMT.DPNG.CD	    42800154974.900001526
+Brazil			           		        DT.AMT.DPNG.CD	    41831444053.300003052
+Least developed countries: UN classification	DT.DIS.DLXF.CD	40160766261.599998474
+```
