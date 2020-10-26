@@ -184,3 +184,135 @@ ANSWER:
     3079734.49
 
 ```
+## Task-5: Instructions
+```
+Find out the country owing to the highest debt.
+
+* Select the country_name and debt columns, then apply the SUM function on the debt column.
+* Alias the column resulted from the summation as total_debt.
+* GROUP the results BY country_name and ORDER them BY the new alias total_debt in a descending manner.
+* LIMIT the number of rows to be one.
+```
+* Country with the highest debt
+```
+"Human beings cannot comprehend very large or very small numbers. It would be useful for us to acknowledge that fact." - Daniel Kahneman. 
+That is more than 3 million million USD, an amount which is really hard for us to fathom.
+Now that we have the exact total of the amounts of debt owed by several countries,
+let's now find out the country that owns the highest amount of debt along with the amount.
+Note that this debt is the sum of different debts owed by a country across several categories.
+This will help to understand more about the country in terms of its socio-economic scenarios.
+We can also find out the category in which the country owns its highest debt. But we will leave that for now.
+
+```
+```
+ANSWER:
+        In [45]:
+        %%sql
+        SELECT 
+            country_name ,
+            SUM(debt) as total_debt
+        FROM international_debt
+        GROUP BY country_name
+        ORDER BY total_debt DESC
+        Limit 1;
+         * postgresql:///international_debt
+        1 rows affected.
+```
+```
+    RESULT:
+    Out[45]:
+    
+    country_name	total_debt
+    China	285793494734.200001568
+```
+
+
+## Task-6: Instructions
+```
+Determine the average amount of debt owed across the categories.
+
+* Select indicator_code aliased as debt_indicator, then select indicator_name and debt.
+* Apply an aggregate function on the debt column to average out its values and alias it as average_debt.
+* Group the results by the newly created debt_indicator and already present indicator_name columns.
+* Sort the output with respect to the average_debt column in a descending manner and limit the results to ten.
+```
+* Average amount of debt across indicators
+
+```
+So, it was China. A more in-depth breakdown of China's debts can be found here.
+We now have a brief overview of the dataset and a few of its summary statistics.
+We already have an idea of the different debt indicators in which the countries owe their debts.
+We can dig even further to find out on an average how much debt a country owes? 
+This will give us a better sense of the distribution of the amount of debt across different indicators.
+
+```
+```
+ANSWER:
+In [47]:
+%%sql
+SELECT 
+    indicator_code AS debt_indicator,
+    indicator_name,
+    AVG(debt) AS average_debt
+FROM international_debt
+GROUP BY debt_indicator, indicator_name
+ORDER BY average_debt DESC
+LIMIT 10;
+ * postgresql:///international_debt
+10 rows affected.
+```
+
+```
+RESULT:
+Out[47]:
+debt_indicator	                                    indicator_name	                                        average_debt
+DT.AMT.DLXF.CD	Principal repayments on external debt, long-term (AMT, current US$)                 	5904868401.499193612
+DT.AMT.DPNG.CD	Principal repayments on external debt, private nonguaranteed (PNG) (AMT, current US$)	5161194333.812658349
+DT.DIS.DLXF.CD	Disbursements on external debt, long-term (DIS, current US$)	                        2152041216.890243888
+DT.DIS.OFFT.CD	PPG, official creditors (DIS, current US$)	                                            1958983452.859836046
+DT.AMT.PRVT.CD	PPG, private creditors (AMT, current US$)	                                            1803694101.963265321
+DT.INT.DLXF.CD	Interest payments on external debt, long-term (INT, current US$)	                    1644024067.650806481
+DT.DIS.BLAT.CD	PPG, bilateral (DIS, current US$)	                                                    1223139290.398230108
+DT.INT.DPNG.CD	Interest payments on external debt, private nonguaranteed (PNG) (INT, current US$)	    1220410844.421518983
+DT.AMT.OFFT.CD	PPG, official creditors (AMT, current US$)                                          	1191187963.083064523
+DT.AMT.PBND.CD	PPG, bonds (AMT, current US$)	1082623947.653623188
+```
+
+ 
+## Task-7: Instructions
+
+```
+Find out the country with the highest amount of principal repayments.
+
+Select the country_name and indicator_name columns.
+Add a WHERE clause to filter out the maximum debt in DT.AMT.DLXF.CD category.
+```
+* The highest amount of principal repayments
+```
+We can see that the indicator DT.AMT.DLXF.CD tops the chart of average debt. This category includes repayment of long term debts. Countries take on long-term debt to acquire immediate capital. More information about this category can be found here.
+
+An interesting observation in the above finding is that there is a huge difference in the amounts of the indicators after the second one. This indicates that the first two indicators might be the most severe categories in which the countries owe their debts.
+
+We can investigate this a bit more so as to find out which country owes the highest amount of debt in the category of long term debts (DT.AMT.DLXF.CD). Since not all the countries suffer from the same kind of economic disturbances, this finding will allow us to understand that particular country's economic condition a bit more specifically.
+```
+```
+ANSWER:
+        In [49]:
+        %%sql
+        SELECT 
+            country_name, 
+            indicator_name
+        FROM international_debt
+        WHERE debt = (SELECT 
+                          MAX(debt)
+                      FROM international_debt
+                      WHERE indicator_code='DT.AMT.DLXF.CD');
+         * postgresql:///international_debt
+1 rows affected.
+```
+```
+RESULT:
+        Out[49]:
+        country_name	                   indicator_name
+        China	        Principal repayments on external debt, long-term (AMT, current US$)
+```
